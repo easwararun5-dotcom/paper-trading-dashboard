@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 // material-ui
 import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
@@ -17,6 +19,63 @@ import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 import UniqueVisitorCard from 'sections/dashboard/default/UniqueVisitorCard';
 import OrdersTable from 'sections/dashboard/default/OrdersTable';
 import { withAlpha } from 'utils/colorUtils';
+
+const indexOptionsData = {
+  nifty: {
+    label: 'NIFTY',
+    subtitle: 'NIFTY 50 · Weekly index options',
+    chart: {
+      labels: ['09:20', '10:00', '10:40', '11:20', '12:00', '12:40', '13:20', '14:00', '14:40', '15:20'],
+      spot: [23580, 23605, 23572, 23618, 23642, 23626, 23684, 23710, 23692, 23736],
+      reference: [23540, 23570, 23592, 23604, 23615, 23630, 23646, 23662, 23678, 23696]
+    },
+    metrics: {
+      spotPrice: '23,736.20',
+      atmStrike: '23,750 CE/PE',
+      pcr: '1.08',
+      maxPain: '23,700',
+      iv: '12.8%',
+      oiChange: '+8.4L contracts',
+      dayTrend: 'Bullish'
+    }
+  },
+  banknifty: {
+    label: 'BANK NIFTY',
+    subtitle: 'BANK NIFTY · Weekly index options',
+    chart: {
+      labels: ['09:20', '10:00', '10:40', '11:20', '12:00', '12:40', '13:20', '14:00', '14:40', '15:20'],
+      spot: [51210, 51168, 51272, 51334, 51296, 51420, 51382, 51476, 51522, 51488],
+      reference: [51180, 51208, 51236, 51272, 51310, 51342, 51374, 51412, 51448, 51486]
+    },
+    metrics: {
+      spotPrice: '51,488.35',
+      atmStrike: '51,500 CE/PE',
+      pcr: '0.94',
+      maxPain: '51,400',
+      iv: '15.6%',
+      oiChange: '-2.1L contracts',
+      dayTrend: 'Rangebound'
+    }
+  },
+  sensex: {
+    label: 'SENSEX',
+    subtitle: 'SENSEX · Weekly index options',
+    chart: {
+      labels: ['09:20', '10:00', '10:40', '11:20', '12:00', '12:40', '13:20', '14:00', '14:40', '15:20'],
+      spot: [77840, 77912, 77866, 77794, 77820, 77742, 77696, 77728, 77654, 77618],
+      reference: [77890, 77870, 77842, 77818, 77795, 77772, 77750, 77728, 77706, 77684]
+    },
+    metrics: {
+      spotPrice: '77,618.10',
+      atmStrike: '77,600 CE/PE',
+      pcr: '0.88',
+      maxPain: '77,800',
+      iv: '13.9%',
+      oiChange: '+1.7L contracts',
+      dayTrend: 'Bearish'
+    }
+  }
+};
 
 const portfolioRows = [
   { symbol: 'RELIANCE', qty: 25, avg: '2,824.50', ltp: '2,896.20', pnl: 1792.5 },
@@ -49,6 +108,7 @@ function InfoRow({ label, value, color = 'text.primary', highlight = false }) {
   const isNumeric = /[0-9%]/.test(value) || value.includes('INR');
   const isSuccess = color === 'success.main' || color === 'success';
   const isError = color === 'error.main' || color === 'error';
+  const isNeutral = color.startsWith('text.');
   const successColor = '#38cd70';
   const errorColor = '#ff6b6b';
 
@@ -56,7 +116,7 @@ function InfoRow({ label, value, color = 'text.primary', highlight = false }) {
     <Stack 
       direction="row" 
       sx={(theme) => {
-        const activeColor = isSuccess ? successColor : (isError ? errorColor : (theme.vars.palette[color.split('.')[0]]?.main || theme.vars.palette.primary.main));
+        const activeColor = isSuccess ? successColor : isError ? errorColor : theme.vars.palette.divider;
         return {
           alignItems: 'center', 
           justifyContent: 'space-between', 
@@ -76,7 +136,7 @@ function InfoRow({ label, value, color = 'text.primary', highlight = false }) {
       <Typography 
         variant="subtitle1" 
         sx={(theme) => {
-          const activeColor = isSuccess ? successColor : (isError ? errorColor : theme.vars.palette[color.split('.')[0]]?.main || color);
+          const activeColor = isSuccess ? successColor : isError ? errorColor : isNeutral ? theme.vars.palette.text.primary : theme.vars.palette[color.split('.')[0]]?.main || color;
           return {
             color: activeColor, 
             fontWeight: 700, 
@@ -94,6 +154,9 @@ function InfoRow({ label, value, color = 'text.primary', highlight = false }) {
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
 export default function DashboardDefault() {
+  const [selectedIndex, setSelectedIndex] = useState('nifty');
+  const selectedOptions = indexOptionsData[selectedIndex];
+
   // Compute portfolio stats dynamically
   const totalInvested = portfolioRows.reduce((acc, row) => acc + row.qty * parseFloat(row.avg.replace(/,/g, '')), 0);
   const totalPnl = portfolioRows.reduce((acc, row) => acc + row.pnl, 0);
@@ -140,30 +203,40 @@ export default function DashboardDefault() {
 
       <Grid container spacing={1.5}>
         <Grid size={{ xs: 12, lg: 8 }}>
-          <UniqueVisitorCard />
+          <UniqueVisitorCard selectedIndex={selectedIndex} onIndexChange={setSelectedIndex} indexOptions={indexOptionsData} />
         </Grid>
         <Grid size={{ xs: 12, lg: 4 }}>
           <Stack sx={{ gap: 1.5, height: '100%' }}>
             <MainCard contentSX={{ p: 1.5, pb: '12px !important' }}>
               <Stack sx={{ gap: 1.5 }}>
-                <SectionTitle title="Current Position" subtitle="RELIANCE · NSE Equity" />
+                <SectionTitle title="Options Snapshot" subtitle={selectedOptions.subtitle} />
                 <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
-                  <InfoRow label="Quantity" value="25" />
-                  <InfoRow label="Avg Price" value="INR 2,824.50" />
-                  <InfoRow label="LTP" value="INR 2,896.20" color="primary.main" highlight />
-                  <InfoRow label="Unrealized" value="+INR 1,792.50" color="success.main" highlight />
+                  <InfoRow label="Spot Price" value={selectedOptions.metrics.spotPrice} highlight />
+                  <InfoRow label="ATM Strike" value={selectedOptions.metrics.atmStrike} />
+                  <InfoRow label="Put Call Ratio (PCR)" value={selectedOptions.metrics.pcr} />
+                  <InfoRow label="Max Pain" value={selectedOptions.metrics.maxPain} />
                 </Box>
               </Stack>
             </MainCard>
 
             <MainCard contentSX={{ p: 1.5, pb: '12px !important' }}>
               <Stack sx={{ gap: 1.5 }}>
-                <SectionTitle title="Active Strategy" subtitle="EMA Crossover · 5 minute candles" />
+                <SectionTitle title="Options Breadth" subtitle="Derived from mock option-chain data" />
                 <Stack sx={{ gap: 1 }}>
-                  <InfoRow label="Status" value="Active" color="success.main" highlight />
-                  <InfoRow label="Last Signal" value="BUY RELIANCE" color="success.main" highlight />
-                  <InfoRow label="Win Rate" value="64%" color="primary.main" highlight />
-                  <InfoRow label="Risk / Trade" value="1.5%" />
+                  <InfoRow label="Implied Volatility (IV)" value={selectedOptions.metrics.iv} />
+                  <InfoRow label="Open Interest Change" value={selectedOptions.metrics.oiChange} />
+                  <InfoRow
+                    label="Day Trend"
+                    value={selectedOptions.metrics.dayTrend}
+                    color={
+                      selectedOptions.metrics.dayTrend === 'Bullish'
+                        ? 'success.main'
+                        : selectedOptions.metrics.dayTrend === 'Bearish'
+                          ? 'error.main'
+                          : 'text.primary'
+                    }
+                    highlight={selectedOptions.metrics.dayTrend !== 'Rangebound'}
+                  />
                 </Stack>
               </Stack>
             </MainCard>

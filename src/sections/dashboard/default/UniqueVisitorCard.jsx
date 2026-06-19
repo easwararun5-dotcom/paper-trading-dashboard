@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 // material-ui
-import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
@@ -11,43 +12,54 @@ import Box from '@mui/material/Box';
 import MainCard from 'components/MainCard';
 import IncomeAreaChart from './IncomeAreaChart';
 
-// ==============================|| DEFAULT - STOCK PRICE ||============================== //
+// ==============================|| DEFAULT - INDEX OPTIONS ANALYSIS ||============================== //
 
-export default function UniqueVisitorCard() {
-  const [view, setView] = useState('monthly'); // 'monthly' or 'weekly'
+export default function UniqueVisitorCard({ selectedIndex, onIndexChange, indexOptions }) {
+  const selectedOption = indexOptions[selectedIndex];
+
+  const handleIndexChange = (event, value) => {
+    onIndexChange(value);
+  };
 
   return (
     <>
       <Grid container sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Grid>
-          <Typography variant="h5">Stock Price</Typography>
+          <Stack sx={{ gap: 0.25 }}>
+            <Typography variant="h5">Index Options Analysis</Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>
+              {selectedOption.subtitle}
+            </Typography>
+          </Stack>
         </Grid>
         <Grid>
-          <Stack direction="row" sx={{ alignItems: 'center' }}>
-            <Button
-              size="small"
-              onClick={() => setView('monthly')}
-              color={view === 'monthly' ? 'primary' : 'secondary'}
-              variant={view === 'monthly' ? 'outlined' : 'text'}
-            >
-              Month
-            </Button>
-            <Button
-              size="small"
-              onClick={() => setView('weekly')}
-              color={view === 'weekly' ? 'primary' : 'secondary'}
-              variant={view === 'weekly' ? 'outlined' : 'text'}
-            >
-              Week
-            </Button>
-          </Stack>
+          <Tabs
+            value={selectedIndex}
+            onChange={handleIndexChange}
+            aria-label="index options tabs"
+            sx={{
+              minHeight: 36,
+              '& .MuiTab-root': { minHeight: 36, py: 0.75, px: { xs: 1.25, sm: 2 }, fontSize: '0.75rem', fontWeight: 700 },
+              '& .MuiTabs-indicator': { height: 2 }
+            }}
+          >
+            {Object.entries(indexOptions).map(([key, option]) => (
+              <Tab key={key} value={key} label={option.label} />
+            ))}
+          </Tabs>
         </Grid>
       </Grid>
       <MainCard content={false} sx={{ mt: 1.5 }}>
         <Box sx={{ pt: 1, pr: 2 }}>
-          <IncomeAreaChart view={view} />
+          <IncomeAreaChart chart={selectedOption.chart} indexLabel={selectedOption.label} />
         </Box>
       </MainCard>
     </>
   );
 }
+
+UniqueVisitorCard.propTypes = {
+  selectedIndex: PropTypes.string,
+  onIndexChange: PropTypes.func,
+  indexOptions: PropTypes.object
+};
