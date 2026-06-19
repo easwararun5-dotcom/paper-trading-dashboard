@@ -17,7 +17,6 @@ import Box from '@mui/material/Box';
 import MainCard from 'components/MainCard';
 import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
 import UniqueVisitorCard from 'sections/dashboard/default/UniqueVisitorCard';
-import OrdersTable from 'sections/dashboard/default/OrdersTable';
 import { withAlpha } from 'utils/colorUtils';
 
 const indexOptionsData = {
@@ -27,13 +26,19 @@ const indexOptionsData = {
     chart: {
       labels: ['09:20', '10:00', '10:40', '11:20', '12:00', '12:40', '13:20', '14:00', '14:40', '15:20'],
       spot: [23580, 23605, 23572, 23618, 23642, 23626, 23684, 23710, 23692, 23736],
-      reference: [23540, 23570, 23592, 23604, 23615, 23630, 23646, 23662, 23678, 23696]
+      ema20: [23552, 23568, 23578, 23594, 23610, 23620, 23642, 23661, 23676, 23696],
+      ema50: [23518, 23532, 23545, 23560, 23576, 23591, 23606, 23622, 23638, 23655],
+      vwap: [23566, 23578, 23584, 23598, 23612, 23622, 23639, 23655, 23669, 23684]
     },
     metrics: {
       spotPrice: '23,736.20',
       atmStrike: '23,750 CE/PE',
       pcr: '1.08',
       maxPain: '23,700',
+      delta: '0.58',
+      gamma: '0.012',
+      theta: '-8.40',
+      vega: '14.20',
       iv: '12.8%',
       oiChange: '+8.4L contracts',
       dayTrend: 'Bullish'
@@ -45,13 +50,19 @@ const indexOptionsData = {
     chart: {
       labels: ['09:20', '10:00', '10:40', '11:20', '12:00', '12:40', '13:20', '14:00', '14:40', '15:20'],
       spot: [51210, 51168, 51272, 51334, 51296, 51420, 51382, 51476, 51522, 51488],
-      reference: [51180, 51208, 51236, 51272, 51310, 51342, 51374, 51412, 51448, 51486]
+      ema20: [51190, 51202, 51222, 51251, 51275, 51308, 51330, 51362, 51396, 51420],
+      ema50: [51142, 51158, 51176, 51198, 51220, 51245, 51270, 51294, 51320, 51347],
+      vwap: [51206, 51204, 51228, 51258, 51281, 51309, 51332, 51364, 51400, 51430]
     },
     metrics: {
       spotPrice: '51,488.35',
       atmStrike: '51,500 CE/PE',
       pcr: '0.94',
       maxPain: '51,400',
+      delta: '0.47',
+      gamma: '0.008',
+      theta: '-12.10',
+      vega: '21.60',
       iv: '15.6%',
       oiChange: '-2.1L contracts',
       dayTrend: 'Rangebound'
@@ -63,13 +74,19 @@ const indexOptionsData = {
     chart: {
       labels: ['09:20', '10:00', '10:40', '11:20', '12:00', '12:40', '13:20', '14:00', '14:40', '15:20'],
       spot: [77840, 77912, 77866, 77794, 77820, 77742, 77696, 77728, 77654, 77618],
-      reference: [77890, 77870, 77842, 77818, 77795, 77772, 77750, 77728, 77706, 77684]
+      ema20: [77882, 77876, 77861, 77839, 77818, 77796, 77770, 77750, 77725, 77698],
+      ema50: [77910, 77896, 77882, 77866, 77850, 77831, 77812, 77794, 77774, 77755],
+      vwap: [77856, 77868, 77858, 77836, 77822, 77800, 77778, 77760, 77738, 77716]
     },
     metrics: {
       spotPrice: '77,618.10',
       atmStrike: '77,600 CE/PE',
       pcr: '0.88',
       maxPain: '77,800',
+      delta: '-0.42',
+      gamma: '0.006',
+      theta: '-10.80',
+      vega: '18.30',
       iv: '13.9%',
       oiChange: '+1.7L contracts',
       dayTrend: 'Bearish'
@@ -83,6 +100,14 @@ const portfolioRows = [
   { symbol: 'HDFCBANK', qty: 40, avg: '1,512.30', ltp: '1,548.70', pnl: 1456.0 },
   { symbol: 'INFY', qty: 30, avg: '1,468.20', ltp: '1,491.60', pnl: 702.0 }
 ];
+
+const recentSignals = [
+  { time: '09:30', index: 'NIFTY', signal: 'BUY CE', confidence: '82%', status: 'Active' },
+  { time: '10:15', index: 'BANK NIFTY', signal: 'HOLD', confidence: '65%', status: 'Closed' },
+  { time: '11:20', index: 'SENSEX', signal: 'BUY PE', confidence: '74%', status: 'Active' }
+];
+
+const aiSignalReasons = ['Price above VWAP', 'EMA20 above EMA50', 'PCR supports bullish move', 'Positive OI buildup'];
 
 const monospaceFont = "SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace";
 const monoSX = { fontFamily: monospaceFont, fontSize: '0.75rem' };
@@ -151,6 +176,124 @@ function InfoRow({ label, value, color = 'text.primary', highlight = false }) {
   );
 }
 
+function RecentSignalsTable() {
+  return (
+    <TableContainer sx={{ maxHeight: 280 }}>
+      <Table stickyHeader size="small" aria-label="recent signals table">
+        <TableHead>
+          <TableRow>
+            {['Time', 'Index', 'Signal', 'Confidence', 'Status'].map((label) => (
+              <TableCell
+                key={label}
+                align={label === 'Confidence' ? 'right' : 'left'}
+                sx={{ py: 1, px: 1.5, fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: 'text.secondary' }}
+              >
+                {label}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {recentSignals.map((row, index) => (
+            <TableRow
+              key={`${row.time}-${row.index}`}
+              hover
+              sx={(theme) => ({
+                bgcolor: index % 2 === 0 ? 'transparent' : theme.vars.palette.action.hover,
+                '&:last-child td, &:last-child th': { border: 0 }
+              })}
+            >
+              <TableCell sx={{ py: 0.85, px: 1.5, ...monoSX }}>{row.time}</TableCell>
+              <TableCell sx={{ py: 0.85, px: 1.5 }}>
+                <Typography sx={{ fontWeight: 700, fontSize: '0.75rem' }}>{row.index}</Typography>
+              </TableCell>
+              <TableCell sx={{ py: 0.85, px: 1.5 }}>
+                <Chip
+                  size="small"
+                  label={row.signal}
+                  sx={(theme) => {
+                    const isBullish = row.signal === 'BUY CE';
+                    const isBearish = row.signal === 'BUY PE';
+                    const activeColor = isBullish ? '#38cd70' : isBearish ? '#ff6b6b' : theme.vars.palette.text.secondary;
+                    return {
+                      height: 22,
+                      borderRadius: '4px',
+                      bgcolor: withAlpha(activeColor, 0.12),
+                      border: '1px solid',
+                      borderColor: withAlpha(activeColor, 0.32),
+                      color: activeColor,
+                      fontWeight: 800,
+                      fontSize: '0.6875rem'
+                    };
+                  }}
+                />
+              </TableCell>
+              <TableCell align="right" sx={{ py: 0.85, px: 1.5, ...monoSX, fontWeight: 700 }}>
+                {row.confidence}
+              </TableCell>
+              <TableCell sx={{ py: 0.85, px: 1.5 }}>
+                <Typography sx={{ color: row.status === 'Active' ? '#38cd70' : 'text.secondary', fontWeight: 700, fontSize: '0.75rem' }}>
+                  {row.status}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
+
+function AiSignalCard() {
+  return (
+    <MainCard contentSX={{ p: 1.5, pb: '12px !important' }}>
+      <Stack sx={{ gap: 1.5 }}>
+        <SectionTitle title="AI Trading Signal" subtitle="ML-assisted read on current options setup" />
+        <Box
+          sx={(theme) => ({
+            p: 1.25,
+            borderRadius: '4px',
+            bgcolor: withAlpha('#38cd70', 0.08),
+            border: '1px solid',
+            borderColor: withAlpha('#38cd70', 0.28)
+          })}
+        >
+          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', gap: 1.5 }}>
+            <Stack sx={{ gap: 0.25 }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase' }}>
+                Signal
+              </Typography>
+              <Typography sx={{ color: '#38cd70', fontSize: '1.25rem', fontWeight: 800, letterSpacing: 0 }}>
+                BUY CE
+              </Typography>
+            </Stack>
+            <Stack sx={{ alignItems: 'flex-end', gap: 0.25 }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase' }}>
+                Confidence
+              </Typography>
+              <Typography sx={{ color: '#38cd70', fontFamily: monospaceFont, fontSize: '1.5rem', fontWeight: 900 }}>
+                82%
+              </Typography>
+            </Stack>
+          </Stack>
+        </Box>
+        <InfoRow label="Market Bias" value="Bullish" color="success.main" highlight />
+        <Stack sx={{ gap: 0.75 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase' }}>
+            Reasons
+          </Typography>
+          {aiSignalReasons.map((reason) => (
+            <Stack key={reason} direction="row" sx={{ alignItems: 'center', gap: 0.75 }}>
+              <Typography sx={{ color: '#38cd70', fontSize: '0.8125rem', fontWeight: 900 }}>✓</Typography>
+              <Typography sx={{ color: 'text.primary', fontSize: '0.75rem', fontWeight: 500 }}>{reason}</Typography>
+            </Stack>
+          ))}
+        </Stack>
+      </Stack>
+    </MainCard>
+  );
+}
+
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
 export default function DashboardDefault() {
@@ -215,6 +358,10 @@ export default function DashboardDefault() {
                   <InfoRow label="ATM Strike" value={selectedOptions.metrics.atmStrike} />
                   <InfoRow label="Put Call Ratio (PCR)" value={selectedOptions.metrics.pcr} />
                   <InfoRow label="Max Pain" value={selectedOptions.metrics.maxPain} />
+                  <InfoRow label="Delta" value={selectedOptions.metrics.delta} />
+                  <InfoRow label="Gamma" value={selectedOptions.metrics.gamma} />
+                  <InfoRow label="Theta" value={selectedOptions.metrics.theta} />
+                  <InfoRow label="Vega" value={selectedOptions.metrics.vega} />
                 </Box>
               </Stack>
             </MainCard>
@@ -240,6 +387,8 @@ export default function DashboardDefault() {
                 </Stack>
               </Stack>
             </MainCard>
+
+            <AiSignalCard />
           </Stack>
         </Grid>
       </Grid>
@@ -247,9 +396,9 @@ export default function DashboardDefault() {
       <Grid container spacing={1.5}>
         <Grid size={{ xs: 12, lg: 8 }}>
           <Stack sx={{ gap: 1 }}>
-            <SectionTitle title="Trade History" subtitle="Most recent paper orders and fills" />
+            <SectionTitle title="Recent Signals" subtitle="Latest ML-assisted options signals" />
             <MainCard content={false}>
-              <OrdersTable />
+              <RecentSignalsTable />
             </MainCard>
           </Stack>
         </Grid>

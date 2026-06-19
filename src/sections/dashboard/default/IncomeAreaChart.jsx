@@ -38,17 +38,21 @@ function Legend({ items, onToggle }) {
 export default function IncomeAreaChart({ chart, indexLabel }) {
   const theme = useTheme();
   const [visibility, setVisibility] = useState({
-    Spot: true,
-    Reference: true
+    'Spot Price': true,
+    'EMA 20': true,
+    'EMA 50': true,
+    VWAP: true
   });
 
   useEffect(() => {
-    setVisibility({ Spot: true, Reference: true });
+    setVisibility({ 'Spot Price': true, 'EMA 20': true, 'EMA 50': true, VWAP: true });
   }, [indexLabel]);
 
   const line = theme.vars.palette.divider;
   const spotColor = theme.vars.palette.text.primary;
-  const referenceColor = theme.vars.palette.text.secondary;
+  const ema20Color = '#60a5fa';
+  const ema50Color = '#f59e0b';
+  const vwapColor = '#a78bfa';
 
   const toggleVisibility = (label) => {
     setVisibility((prev) => ({ ...prev, [label]: !prev[label] }));
@@ -57,21 +61,39 @@ export default function IncomeAreaChart({ chart, indexLabel }) {
   const visibleSeries = [
     {
       data: chart.spot,
-      label: 'Spot',
+      label: 'Spot Price',
       showMark: false,
       area: true,
       id: 'spot',
       color: spotColor,
-      visible: visibility.Spot
+      visible: visibility['Spot Price']
     },
     {
-      data: chart.reference,
-      label: 'Reference',
+      data: chart.ema20,
+      label: 'EMA 20',
       showMark: false,
       area: false,
-      id: 'reference',
-      color: referenceColor,
-      visible: visibility.Reference
+      id: 'ema20',
+      color: ema20Color,
+      visible: visibility['EMA 20']
+    },
+    {
+      data: chart.ema50,
+      label: 'EMA 50',
+      showMark: false,
+      area: false,
+      id: 'ema50',
+      color: ema50Color,
+      visible: visibility['EMA 50']
+    },
+    {
+      data: chart.vwap,
+      label: 'VWAP',
+      showMark: false,
+      area: false,
+      id: 'vwap',
+      color: vwapColor,
+      visible: visibility.VWAP
     }
   ];
 
@@ -95,7 +117,7 @@ export default function IncomeAreaChart({ chart, indexLabel }) {
             id: series.id,
             color: series.color,
             stroke: series.color,
-            strokeWidth: series.id === 'spot' ? 2.2 : 1.6
+            strokeWidth: series.id === 'spot' ? 2.3 : 1.8
           }))}
         sx={{
           [`& .${chartsGridClasses.line}`]: { strokeDasharray: '4 4', stroke: line },
@@ -124,7 +146,9 @@ IncomeAreaChart.propTypes = {
   chart: PropTypes.shape({
     labels: PropTypes.array,
     spot: PropTypes.array,
-    reference: PropTypes.array
+    ema20: PropTypes.array,
+    ema50: PropTypes.array,
+    vwap: PropTypes.array
   }),
   indexLabel: PropTypes.string
 };
