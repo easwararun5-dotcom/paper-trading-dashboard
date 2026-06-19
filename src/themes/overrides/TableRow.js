@@ -11,6 +11,7 @@ export default function TableRow() {
             }
           },
           '& .MuiTableCell-root': {
+            borderBottomColor: 'var(--palette-divider)',
             '&:last-of-type': {
               paddingRight: 24
             },

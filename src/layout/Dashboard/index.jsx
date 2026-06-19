@@ -14,11 +14,13 @@ import Breadcrumbs from 'components/@extended/Breadcrumbs';
 import ScrollTop from 'components/ScrollTop';
 
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
+import { DRAWER_WIDTH } from 'config';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
 export default function DashboardLayout() {
-  const { menuMasterLoading } = useGetMenuMaster();
+  const { menuMaster, menuMasterLoading } = useGetMenuMaster();
+  const drawerOpen = menuMaster?.isDashboardDrawerOpened ?? true;
   const downXL = useMediaQuery((theme) => theme.breakpoints.down('xl'));
 
   // set media wise responsive drawer
@@ -34,7 +36,19 @@ export default function DashboardLayout() {
       <Header />
       <Drawer />
 
-      <Box component="main" sx={{ width: 'calc(100% - 260px)', flexGrow: 1, p: { xs: 2, sm: 3 } }}>
+      <Box
+        component="main"
+        sx={{
+          width: { xs: '100%', lg: `calc(100% - ${drawerOpen ? DRAWER_WIDTH : 60}px)` },
+          flexGrow: 1,
+          p: { xs: 2, sm: 3 },
+          transition: (theme) =>
+            theme.transitions.create('width', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.enteringScreen
+            })
+        }}
+      >
         <Toolbar sx={{ mt: 'inherit' }} />
         <Box
           sx={{

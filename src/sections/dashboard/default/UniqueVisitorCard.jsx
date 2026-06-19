@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import MainCard from 'components/MainCard';
 import IncomeAreaChart from './IncomeAreaChart';
 
-// ==============================|| DEFAULT - UNIQUE VISITOR ||============================== //
+// ==============================|| DEFAULT - STOCK PRICE ||============================== //
 
 export default function UniqueVisitorCard() {
   const [view, setView] = useState('monthly'); // 'monthly' or 'weekly'
@@ -20,7 +20,7 @@ export default function UniqueVisitorCard() {
     <>
       <Grid container sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <Grid>
-          <Typography variant="h5">Unique Visitor</Typography>
+          <Typography variant="h5">Stock Price</Typography>
         </Grid>
         <Grid>
           <Stack direction="row" sx={{ alignItems: 'center' }}>

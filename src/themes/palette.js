@@ -38,6 +38,63 @@ export function buildPalette(presetColor) {
 
   const extendedLight = extendPaletteWithChannels(lightPaletteColor);
   const extendedCommon = extendPaletteWithChannels(commonColor);
+  const darkPalette = {
+    ...extendedLight,
+    primary: {
+      ...extendedLight.primary,
+      lighter: '#111d2c',
+      100: '#153450',
+      200: '#164c7e',
+      light: '#4096ff',
+      main: '#1677ff',
+      dark: '#0958d9',
+      700: '#003eb3',
+      darker: '#002c8c'
+    },
+    secondary: {
+      ...extendedLight.secondary,
+      lighter: '#1f1f1f',
+      100: '#262626',
+      200: '#303030',
+      light: '#595959',
+      main: '#8c8c8c',
+      dark: '#bfbfbf',
+      800: '#d9d9d9',
+      darker: '#f0f0f0',
+      A100: '#141414',
+      A200: '#434343',
+      A300: '#8c8c8c',
+      contrastText: '#ffffff'
+    },
+    success: {
+      ...extendedLight.success,
+      lighter: '#162312',
+      light: '#49aa19',
+      main: '#52c41a',
+      dark: '#95de64'
+    },
+    warning: {
+      ...extendedLight.warning,
+      lighter: '#2b2111',
+      light: '#d48806',
+      main: '#faad14',
+      dark: '#ffd666'
+    },
+    error: {
+      ...extendedLight.error,
+      lighter: '#2a1215',
+      light: '#dc4446',
+      main: '#ff4d4f',
+      dark: '#ff7875'
+    },
+    info: {
+      ...extendedLight.info,
+      lighter: '#112123',
+      light: '#13a8a8',
+      main: '#36cfc9',
+      dark: '#5cdbd3'
+    }
+  };
 
   return {
     light: {
@@ -54,6 +111,22 @@ export function buildPalette(presetColor) {
       background: {
         paper: extendedLight.grey[0],
         default: extendedLight.grey.A50
+      }
+    },
+    dark: {
+      mode: 'dark',
+      ...extendedCommon,
+      ...darkPalette,
+      text: {
+        primary: '#f0f0f0',
+        secondary: '#bfbfbf',
+        disabled: '#595959'
+      },
+      action: { disabled: '#434343' },
+      divider: '#303030',
+      background: {
+        paper: '#1b1d21',
+        default: '#111317'
       }
     }
   };

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 // material-ui
-import Link from '@mui/material/Link';
+import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,22 +17,19 @@ import { NumericFormat } from 'react-number-format';
 
 // project imports
 import Dot from 'components/@extended/Dot';
+import { withAlpha } from 'utils/colorUtils';
 
-function createData(tracking_no, name, fat, carbs, protein) {
-  return { tracking_no, name, fat, carbs, protein };
+function createData(tradeId, symbol, side, quantity, status, price) {
+  return { tradeId, symbol, side, quantity, status, price };
 }
 
 const rows = [
-  createData(84564564, 'Camera Lens', 40, 2, 40570),
-  createData(98764564, 'Laptop', 300, 0, 180139),
-  createData(98756325, 'Mobile', 355, 1, 90989),
-  createData(98652366, 'Handset', 50, 1, 10239),
-  createData(13286564, 'Computer Accessories', 100, 1, 83348),
-  createData(86739658, 'TV', 99, 0, 410780),
-  createData(13256498, 'Keyboard', 125, 2, 70999),
-  createData(98753263, 'Mouse', 89, 2, 10570),
-  createData(98753275, 'Desktop', 185, 1, 98063),
-  createData(98753291, 'Chair', 100, 0, 14001)
+  createData('TRD-1028', 'RELIANCE', 'Buy', 10, 1, 2890.2),
+  createData('TRD-1027', 'TCS', 'Sell', 4, 1, 3820.0),
+  createData('TRD-1026', 'INFY', 'Buy', 15, 0, 1487.5),
+  createData('TRD-1025', 'HDFCBANK', 'Buy', 20, 1, 1544.8),
+  createData('TRD-1024', 'SBIN', 'Sell', 30, 2, 812.1),
+  createData('TRD-1023', 'ITC', 'Buy', 50, 1, 436.6)
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -63,37 +60,39 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'tracking_no',
+    id: 'tradeId',
     align: 'left',
     disablePadding: false,
-    label: 'Tracking No.'
+    label: 'Trade ID'
   },
   {
-    id: 'name',
+    id: 'symbol',
     align: 'left',
     disablePadding: true,
-    label: 'Product Name'
+    label: 'Symbol'
   },
   {
-    id: 'fat',
+    id: 'quantity',
     align: 'right',
     disablePadding: false,
-    label: 'Total Order'
+    label: 'Quantity'
   },
   {
-    id: 'carbs',
+    id: 'status',
     align: 'left',
     disablePadding: false,
 
     label: 'Status'
   },
   {
-    id: 'protein',
+    id: 'price',
     align: 'right',
     disablePadding: false,
-    label: 'Total Amount'
+    label: 'Price'
   }
 ];
+
+const monoSX = { fontFamily: "SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace", fontSize: '0.75rem' };
 
 // ==============================|| ORDER TABLE - HEADER ||============================== //
 
@@ -107,6 +106,7 @@ function OrderTableHead({ order, orderBy }) {
             align={headCell.align}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
+            sx={{ py: 1, px: 1.5, fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: 'text.secondary' }}
           >
             {headCell.label}
           </TableCell>
@@ -123,15 +123,15 @@ function OrderStatus({ status }) {
   switch (status) {
     case 0:
       color = 'warning';
-      title = 'Pending';
+      title = 'Open';
       break;
     case 1:
       color = 'success';
-      title = 'Approved';
+      title = 'Filled';
       break;
     case 2:
       color = 'error';
-      title = 'Rejected';
+      title = 'Exited';
       break;
     default:
       color = 'primary';
@@ -139,9 +139,9 @@ function OrderStatus({ status }) {
   }
 
   return (
-    <Stack direction="row" sx={{ gap: 1, alignItems: 'center' }}>
+    <Stack direction="row" sx={{ gap: 0.75, alignItems: 'center' }}>
       <Dot color={color} />
-      <Typography>{title}</Typography>
+      <Typography sx={{ fontSize: '0.75rem', fontWeight: 500 }}>{title}</Typography>
     </Stack>
   );
 }
@@ -150,7 +150,7 @@ function OrderStatus({ status }) {
 
 export default function OrderTable() {
   const order = 'asc';
-  const orderBy = 'tracking_no';
+  const orderBy = 'tradeId';
 
   return (
     <Box>
@@ -161,10 +161,11 @@ export default function OrderTable() {
           position: 'relative',
           display: 'block',
           maxWidth: '100%',
+          maxHeight: 280,
           '& td, & th': { whiteSpace: 'nowrap' }
         }}
       >
-        <Table aria-labelledby="tableTitle">
+        <Table stickyHeader size="small" aria-labelledby="tableTitle">
           <OrderTableHead order={order} orderBy={orderBy} />
           <TableBody>
             {stableSort(rows, getComparator(order, orderBy)).map((row, index) => {
@@ -174,20 +175,57 @@ export default function OrderTable() {
                 <TableRow
                   hover
                   role="checkbox"
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  sx={(theme) => {
+                    const successColor = '#38cd70';
+                    const errorColor = '#ff6b6b';
+                    return {
+                      bgcolor: index % 2 === 0 ? 'transparent' : theme.vars.palette.action.hover,
+                      borderLeft: '4px solid',
+                      borderLeftColor: row.side === 'Buy' ? successColor : errorColor,
+                      '&:last-child td, &:last-child th': { border: 0 }
+                    };
+                  }}
                   tabIndex={-1}
-                  key={row.tracking_no}
+                  key={row.tradeId}
                 >
-                  <TableCell component="th" id={labelId} scope="row">
-                    <Link sx={{ color: 'secondary.main' }}>{row.tracking_no}</Link>
+                  <TableCell component="th" id={labelId} scope="row" sx={{ py: 0.75, px: 1.5 }}>
+                    <Typography sx={{ color: 'secondary.main', ...monoSX, fontWeight: 500 }}>{row.tradeId}</Typography>
                   </TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
-                  <TableCell>
-                    <OrderStatus status={row.carbs} />
+                  <TableCell sx={{ py: 0.75, px: 1.5 }}>
+                    <Stack direction="row" sx={{ gap: 1.25, alignItems: 'center' }}>
+                      <Typography sx={{ fontWeight: 600, fontSize: '0.75rem' }}>{row.symbol}</Typography>
+                      <Box
+                        sx={(theme) => {
+                          const successColor = '#38cd70';
+                          const errorColor = '#ff6b6b';
+                          const activeColor = row.side === 'Buy' ? successColor : errorColor;
+                          return {
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            px: 1.25,
+                            py: 0.25,
+                            height: '22px',
+                            borderRadius: '4px',
+                            bgcolor: withAlpha(activeColor, 0.12),
+                            border: '1px solid',
+                            borderColor: withAlpha(activeColor, 0.35),
+                            color: activeColor
+                          };
+                        }}
+                      >
+                        <Typography sx={{ fontWeight: 800, fontSize: '0.6875rem', color: 'inherit', letterSpacing: '0.5px' }}>
+                          {row.side.toUpperCase()}
+                        </Typography>
+                      </Box>
+                    </Stack>
                   </TableCell>
-                  <TableCell align="right">
-                    <NumericFormat value={row.protein} displayType="text" thousandSeparator prefix="$" />
+                  <TableCell align="right" sx={{ py: 0.75, px: 1.5, ...monoSX }}>{row.quantity}</TableCell>
+                  <TableCell sx={{ py: 0.75, px: 1.5 }}>
+                    <OrderStatus status={row.status} />
+                  </TableCell>
+                  <TableCell align="right" sx={{ py: 0.75, px: 1.5, ...monoSX }}>
+                    <NumericFormat value={row.price} displayType="text" thousandSeparator prefix="INR " decimalScale={2} fixedDecimalScale />
                   </TableCell>
                 </TableRow>
               );

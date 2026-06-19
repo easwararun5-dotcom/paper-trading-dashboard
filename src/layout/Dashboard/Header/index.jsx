@@ -39,11 +39,16 @@ export default function Header() {
         variant="light"
         sx={(theme) => ({
           color: 'text.primary',
-          bgcolor: drawerOpen ? 'transparent' : 'grey.100',
+          bgcolor: 'background.paper',
           ml: { xs: 0, lg: -2 }
         })}
       >
-        {!drawerOpen ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        <IconButton
+  aria-label="open drawer"
+  onClick={() => handlerDrawerOpen(!drawerOpen)}
+>
+  ☰
+</IconButton>
       </IconButton>
       {headerContent}
     </Toolbar>

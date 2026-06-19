@@ -1,16 +1,21 @@
 // assets
-import { DashboardOutlined } from '@ant-design/icons';
+import { DashboardOutlined, ExperimentOutlined, SettingOutlined, StockOutlined, SwapOutlined, WalletOutlined } from '@ant-design/icons';
 
 // icons
 const icons = {
-  DashboardOutlined
+  DashboardOutlined,
+  ExperimentOutlined,
+  SettingOutlined,
+  StockOutlined,
+  SwapOutlined,
+  WalletOutlined
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
 const dashboard = {
-  id: 'group-dashboard',
-  title: 'Navigation',
+  id: 'paper-trading',
+  title: 'Paper Trading Dashboard',
   type: 'group',
   children: [
     {
@@ -19,6 +24,38 @@ const dashboard = {
       type: 'item',
       url: '/dashboard/default',
       icon: icons.DashboardOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'portfolio',
+      title: 'Portfolio',
+      type: 'item',
+      url: '/portfolio',
+      icon: icons.WalletOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'trades',
+      title: 'Trades',
+      type: 'item',
+      url: '/trades',
+      icon: icons.SwapOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'strategies',
+      title: 'Strategies',
+      type: 'item',
+      url: '/strategies',
+      icon: icons.ExperimentOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'settings',
+      title: 'Settings',
+      type: 'item',
+      url: '/settings',
+      icon: icons.SettingOutlined,
       breadcrumbs: false
     }
   ]

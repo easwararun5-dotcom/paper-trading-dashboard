@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 
 import { axisClasses, barClasses, BarChart } from '@mui/x-charts';
 
-const data = [80, 95, 70, 42, 65, 55, 78];
+const data = [8, 11, 7, 5, 9, 4, 6];
 const xLabels = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
 // ==============================|| MONTHLY BAR CHART ||============================== //
@@ -15,7 +15,7 @@ export default function MonthlyBarChart() {
     <BarChart
       hideLegend
       height={380}
-      series={[{ data, label: 'Series-1' }]}
+      series={[{ data, label: 'Closed Trades' }]}
       xAxis={[{ data: xLabels, scaleType: 'band', tickSize: 7, disableLine: true, categoryGapRatio: 0.4 }]}
       yAxis={[{ position: 'none' }]}
       slotProps={{ bar: { rx: 5, ry: 5 } }}

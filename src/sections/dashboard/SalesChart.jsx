@@ -14,14 +14,14 @@ import { axisClasses, barClasses, BarChart, chartsGridClasses } from '@mui/x-cha
 import MainCard from 'components/MainCard';
 import { withAlpha } from 'utils/colorUtils';
 
-// ==============================|| SALES COLUMN CHART ||============================== //
+// ==============================|| STRATEGY PERFORMANCE COLUMN CHART ||============================== //
 
 export default function SalesChart({ filter = 'today' }) {
   const theme = useTheme();
   const downSM = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const [seriesVisibility, setSeriesVisibility] = useState({ Income: true, 'Cost of Sales': true });
-  const [highlightedItem, setHighlightedItem] = useState({ seriesId: 'Income' });
+  const [seriesVisibility, setSeriesVisibility] = useState({ Wins: true, Losses: true });
+  const [highlightedItem, setHighlightedItem] = useState({ seriesId: 'Wins' });
 
   const toggleSeriesVisibility = (seriesId, seriesLabel) => {
     setSeriesVisibility((prev) => {
@@ -42,7 +42,7 @@ export default function SalesChart({ filter = 'today' }) {
     }
   };
 
-  const valueFormatter = (value) => `$ ${value} Thousands`;
+  const valueFormatter = (value) => `${value} trades`;
   const primaryColor = theme.vars.palette.primary.main;
   const primaryLightColor = theme.vars.palette.primary.lighter;
   const warningColor = theme.vars.palette.warning.main;
@@ -52,45 +52,45 @@ export default function SalesChart({ filter = 'today' }) {
 
   const chartData = useMemo(() => {
     let labels = [];
-    let incomeData = [];
-    let income2Data = [];
-    let cosData = [];
-    let cos2Data = [];
+    let winsData = [];
+    let wins2Data = [];
+    let lossesData = [];
+    let losses2Data = [];
 
     switch (filter) {
       case 'month':
         labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-        incomeData = [400, 300, 500, 450];
-        income2Data = [50, 80, 60, 90];
-        cosData = [200, 150, 250, 200];
-        cos2Data = [100, 120, 90, 110];
+        winsData = [12, 9, 14, 11];
+        wins2Data = [4, 3, 5, 4];
+        lossesData = [5, 4, 6, 3];
+        losses2Data = [2, 2, 1, 2];
         break;
       case 'year':
         labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        incomeData = [120, 150, 180, 160, 200, 220, 250, 230, 210, 260, 280, 300];
-        income2Data = [30, 40, 50, 45, 60, 70, 80, 75, 65, 85, 95, 100];
-        cosData = [80, 100, 120, 110, 140, 150, 170, 160, 150, 180, 190, 200];
-        cos2Data = [40, 50, 60, 55, 70, 80, 90, 85, 75, 95, 105, 110];
+        winsData = [32, 35, 38, 34, 42, 45, 48, 44, 41, 47, 52, 50];
+        wins2Data = [9, 10, 11, 8, 12, 13, 14, 12, 11, 13, 15, 14];
+        lossesData = [18, 16, 15, 17, 14, 13, 12, 15, 16, 13, 11, 12];
+        losses2Data = [5, 4, 4, 5, 3, 4, 3, 4, 5, 3, 3, 4];
         break;
       case 'today':
       default:
         labels = ['07.06', '08.06', '09.06', '10.06', '11.06', '12.06', '13.06'];
-        incomeData = [180, 90, 135, 114, 120, 200, 145];
-        income2Data = [20, 110, 65, 86, 80, 0, 55];
-        cosData = [120, 45, 78, 150, 168, 145, 99];
-        cos2Data = [80, 155, 122, 50, 32, 55, 101];
+        winsData = [5, 3, 4, 6, 4, 7, 5];
+        wins2Data = [2, 1, 2, 1, 3, 2, 2];
+        lossesData = [2, 4, 2, 3, 2, 1, 3];
+        losses2Data = [1, 1, 1, 2, 1, 0, 1];
         break;
     }
-    return { labels, incomeData, income2Data, cosData, cos2Data };
+    return { labels, winsData, wins2Data, lossesData, losses2Data };
   }, [filter]);
 
-  const { labels, incomeData, income2Data, cosData, cos2Data } = chartData;
+  const { labels, winsData, wins2Data, lossesData, losses2Data } = chartData;
 
   const initialSeries = [
-    { id: 'Income', data: incomeData, stack: 'income', label: 'Income', color: warningColor, valueFormatter },
-    { id: 'Income2', data: income2Data, stack: 'income', label: 'Income', color: warningLightColor, valueFormatter },
-    { id: 'CostOfSales', data: cosData, stack: 'cos', label: 'Cost of Sales', color: primaryColor, valueFormatter },
-    { id: 'CostOfSales2', data: cos2Data, stack: 'cos', label: 'Cost of Sales', color: primaryLightColor, valueFormatter }
+    { id: 'Wins', data: winsData, stack: 'wins', label: 'Wins', color: warningColor, valueFormatter },
+    { id: 'WinsPartial', data: wins2Data, stack: 'wins', label: 'Wins', color: warningLightColor, valueFormatter },
+    { id: 'Losses', data: lossesData, stack: 'losses', label: 'Losses', color: primaryColor, valueFormatter },
+    { id: 'LossesPartial', data: losses2Data, stack: 'losses', label: 'Losses', color: primaryLightColor, valueFormatter }
   ];
 
   const initialSeriesCopy = [...initialSeries.slice(0, 1), ...initialSeries.slice(2, 3)];
@@ -101,9 +101,9 @@ export default function SalesChart({ filter = 'today' }) {
         <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
           <Box>
             <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-              Net Profit
+              Strategy P&L
             </Typography>
-            <Typography variant="h4">$1560</Typography>
+            <Typography variant="h4">INR 5,560</Typography>
           </Box>
 
           <Stack direction="row" sx={{ gap: 3 }}>

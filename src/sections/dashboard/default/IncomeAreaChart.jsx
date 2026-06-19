@@ -12,20 +12,21 @@ import { LineChart } from '@mui/x-charts/LineChart';
 
 // project imports
 import { withAlpha } from 'utils/colorUtils';
+import { color } from 'framer-motion';
 
-// Sample data
+// Mock stock price data
 const monthlyLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const weeklyLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-const monthlyData1 = [76, 85, 101, 98, 87, 105, 91, 114, 94, 86, 115, 35];
-const weeklyData1 = [31, 40, 28, 51, 42, 109, 100];
+const monthlyData1 = [2475, 2522, 2588, 2630, 2594, 2712, 2768, 2835, 2798, 2860, 2914, 2896];
+const weeklyData1 = [2842, 2868, 2854, 2882, 2911, 2898, 2924];
 
-const monthlyData2 = [110, 60, 150, 35, 60, 36, 26, 45, 65, 52, 53, 41];
-const weeklyData2 = [11, 32, 45, 32, 34, 52, 41];
+const monthlyData2 = [2440, 2495, 2538, 2602, 2620, 2664, 2718, 2774, 2806, 2830, 2872, 2902];
+const weeklyData2 = [2825, 2840, 2858, 2870, 2886, 2895, 2908];
 
 function Legend({ items, onToggle }) {
   return (
-    <Stack direction="row" sx={{ gap: 2, alignItems: 'center', justifyContent: 'center', mt: 2.5, mb: 1.5 }}>
+    <Stack direction="row" sx={{ gap: 2, alignItems: 'center', justifyContent: 'center', mt: 1, mb: 0.5 }}>
       {items.map((item) => (
         <Stack
           key={item.label}
@@ -49,8 +50,8 @@ export default function IncomeAreaChart({ view }) {
   const theme = useTheme();
 
   const [visibility, setVisibility] = useState({
-    'Page views': true,
-    Sessions: true
+    'RELIANCE Price': true,
+    '20 DMA': true
   });
 
   const labels = view === 'monthly' ? monthlyLabels : weeklyLabels;
@@ -66,21 +67,21 @@ export default function IncomeAreaChart({ view }) {
   const visibleSeries = [
     {
       data: data1,
-      label: 'Page views',
+      label: 'RELIANCE Price',
       showMark: false,
       area: true,
-      id: 'page-views',
+      id: 'price',
       color: theme.vars.palette.primary.main || '',
-      visible: visibility['Page views']
+      visible: visibility['RELIANCE Price']
     },
     {
       data: data2,
-      label: 'Sessions',
+      label: '20 DMA',
       showMark: false,
-      area: true,
-      id: 'sessions',
-      color: theme.vars.palette.primary[700] || '',
-      visible: visibility['Sessions']
+      area: false,
+      id: 'moving-average',
+      color: '#F59E0B',
+      visible: visibility['20 DMA']
     }
   ];
 
@@ -91,8 +92,8 @@ export default function IncomeAreaChart({ view }) {
         grid={{ horizontal: true, vertical: false }}
         xAxis={[{ scaleType: 'point', data: labels, tickSize: 7, disableLine: true }]}
         yAxis={[{ tickSize: 7, disableLine: true }]}
-        height={450}
-        margin={{ top: 40, bottom: -5, right: 20, left: 5 }}
+        height={320}
+        margin={{ top: 20, bottom: 20, right: 15, left: 10 }}
         series={visibleSeries
           .filter((series) => series.visible)
           .map((series) => ({
@@ -109,8 +110,8 @@ export default function IncomeAreaChart({ view }) {
         sx={{
           [`& .${chartsGridClasses.line}`]: { strokeDasharray: '4 4', stroke: line },
           [`& .${lineClasses.area}`]: {
-            '&[data-series-id="page-views"]': { fill: "url('#myGradient1')", strokeWidth: 2, opacity: 0.8 },
-            '&[data-series-id="sessions"]': { fill: "url('#myGradient2')", strokeWidth: 2, opacity: 0.8 }
+            '&[data-series-id="price"]': { fill: "url('#myGradient1')", strokeWidth: 2, opacity: 0.8 },
+            '&[data-series-id="moving-average"]': { fill: "url('#myGradient2')", strokeWidth: 2, opacity: 0.8 }
           },
           [`& .${axisClasses.root}.${axisClasses.directionX} .${axisClasses.tick}`]: { stroke: 'transparent' },
           [`& .${axisClasses.root}.${axisClasses.directionY} .${axisClasses.tick}`]: { stroke: 'transparent' }

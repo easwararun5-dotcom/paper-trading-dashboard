@@ -1,11 +1,11 @@
 {
-  "name": "mantis-material-free-react",
+  "name": "paper-trading-dashboard",
   "version": "2.2.0",
-  "homepage": "https://mantisdashboard.com/free",
+  "homepage": ".",
   "author": {
-    "name": "CodedThemes",
-    "email": "codedthemes@gmail.com",
-    "url": "https://codedthemes.com/"
+    "name": "Paper Trading Dashboard",
+    "email": "",
+    "url": ""
   },
   "scripts": {
     "start": "vite",

@@ -7,13 +7,11 @@ import DashboardLayout from 'layout/Dashboard';
 // render- Dashboard
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/default')));
 
-// render - color
-const Color = Loadable(lazy(() => import('pages/component-overview/color')));
-const Typography = Loadable(lazy(() => import('pages/component-overview/typography')));
-const Shadow = Loadable(lazy(() => import('pages/component-overview/shadows')));
-
-// render - sample page
-const SamplePage = Loadable(lazy(() => import('pages/extra-pages/sample-page')));
+// render - trading pages
+const Portfolio = Loadable(lazy(() => import('pages/portfolio')));
+const Trades = Loadable(lazy(() => import('pages/trades')));
+const Strategies = Loadable(lazy(() => import('pages/strategies')));
+const Settings = Loadable(lazy(() => import('pages/settings')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -35,20 +33,20 @@ const MainRoutes = {
       ]
     },
     {
-      path: 'typography',
-      element: <Typography />
+      path: 'portfolio',
+      element: <Portfolio />
     },
     {
-      path: 'color',
-      element: <Color />
+      path: 'trades',
+      element: <Trades />
     },
     {
-      path: 'shadow',
-      element: <Shadow />
+      path: 'strategies',
+      element: <Strategies />
     },
     {
-      path: 'sample-page',
-      element: <SamplePage />
+      path: 'settings',
+      element: <Settings />
     }
   ]
 };
