@@ -8,6 +8,7 @@ import DashboardLayout from 'layout/Dashboard';
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/default')));
 
 // render - trading pages
+const OptionsChain = Loadable(lazy(() => import('pages/options-chain')));
 const Portfolio = Loadable(lazy(() => import('pages/portfolio')));
 const Trades = Loadable(lazy(() => import('pages/trades')));
 const Strategies = Loadable(lazy(() => import('pages/strategies')));
@@ -31,6 +32,10 @@ const MainRoutes = {
           element: <DashboardDefault />
         }
       ]
+    },
+    {
+      path: 'options-chain',
+      element: <OptionsChain />
     },
     {
       path: 'portfolio',

@@ -24,12 +24,12 @@ function createData(tradeId, symbol, side, quantity, status, price) {
 }
 
 const rows = [
-  createData('TRD-1028', 'RELIANCE', 'Buy', 10, 1, 2890.2),
-  createData('TRD-1027', 'TCS', 'Sell', 4, 1, 3820.0),
-  createData('TRD-1026', 'INFY', 'Buy', 15, 0, 1487.5),
-  createData('TRD-1025', 'HDFCBANK', 'Buy', 20, 1, 1544.8),
-  createData('TRD-1024', 'SBIN', 'Sell', 30, 2, 812.1),
-  createData('TRD-1023', 'ITC', 'Buy', 50, 1, 436.6)
+  createData('SIG-1028', 'NIFTY 23750 CE', 'Buy', 50, 1, 148.5),
+  createData('SIG-1027', 'BANK NIFTY 52500 PE', 'Sell', 30, 1, 198.4),
+  createData('SIG-1026', 'SENSEX 78000 CE', 'Buy', 20, 0, 221.75),
+  createData('SIG-1025', 'NIFTY 23700 PE', 'Buy', 50, 1, 96.2),
+  createData('SIG-1024', 'BANK NIFTY 52000 CE', 'Sell', 30, 2, 174.8),
+  createData('SIG-1023', 'SENSEX 77600 PE', 'Buy', 20, 1, 163.75)
 ];
 
 function descendingComparator(a, b, orderBy) {

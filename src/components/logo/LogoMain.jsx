@@ -45,10 +45,10 @@ export default function LogoMain({ isIcon = false }) {
       </Box>
       <Stack sx={{ lineHeight: 1 }}>
         <Typography variant="subtitle1" sx={{ fontWeight: 700, lineHeight: 1.1 }}>
-          Paper Trading
+          AI Index Options
         </Typography>
         <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1.1 }}>
-          Dashboard
+          Platform
         </Typography>
       </Stack>
     </Stack>

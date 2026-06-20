@@ -13,10 +13,10 @@ import Typography from '@mui/material/Typography';
 import MainCard from 'components/MainCard';
 
 const strategies = [
-  { name: 'EMA Crossover', status: 'Active', lastSignal: 'Buy RELIANCE', pnl: 2850 },
-  { name: 'RSI Reversal', status: 'Inactive', lastSignal: 'Hold INFY', pnl: -640 },
-  { name: 'Opening Range Breakout', status: 'Active', lastSignal: 'Sell TCS', pnl: 1420 },
-  { name: 'VWAP Pullback', status: 'Active', lastSignal: 'Buy HDFCBANK', pnl: 930 }
+  { name: 'NIFTY EMA Crossover', status: 'Active', lastSignal: 'BUY 23750 CE', pnl: 2850 },
+  { name: 'SENSEX RSI Reversal', status: 'Inactive', lastSignal: 'HOLD 78000 CE', pnl: -640 },
+  { name: 'BANK NIFTY ORB', status: 'Active', lastSignal: 'BUY 52500 PE', pnl: 1420 },
+  { name: 'NIFTY VWAP Pullback', status: 'Active', lastSignal: 'BUY 23700 CE', pnl: 930 }
 ];
 
 function formatCurrency(value) {

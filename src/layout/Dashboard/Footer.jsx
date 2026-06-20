@@ -7,7 +7,7 @@ export default function Footer() {
       direction={{ xs: 'column', sm: 'row' }}
       sx={{ gap: 1.5, alignItems: 'center', justifyContent: 'space-between', p: '24px 16px 0px', mt: 'auto' }}
     >
-      <Typography variant="caption">&copy; Paper Trading Dashboard. Mock trading data only.</Typography>
+      <Typography variant="caption">&copy; AI Index Options Platform. Mock trading data only.</Typography>
       <Stack direction="row" sx={{ gap: 1.5, alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="caption" sx={{ color: 'text.primary' }}>
           No external broker connection

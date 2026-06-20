@@ -14,7 +14,7 @@ export default function AuthFooter() {
         sx={{ gap: 2, justifyContent: { xs: 'center', sm: 'space-between' }, textAlign: { xs: 'center', sm: 'inherit' }, py: 2 }}
       >
         <Typography variant="subtitle2" sx={{ color: 'secondary.main' }}>
-          Paper Trading Dashboard
+          AI Index Options Platform
         </Typography>
 
         <Stack direction={{ xs: 'column', sm: 'row' }} sx={{ gap: { xs: 1, sm: 3 }, textAlign: { xs: 'center', sm: 'inherit' } }}>

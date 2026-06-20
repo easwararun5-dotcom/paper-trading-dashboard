@@ -1,13 +1,13 @@
 // assets
-import { DashboardOutlined, ExperimentOutlined, SettingOutlined, StockOutlined, SwapOutlined, WalletOutlined } from '@ant-design/icons';
+import { DashboardOutlined, ExperimentOutlined, SettingOutlined, SwapOutlined, TableOutlined, WalletOutlined } from '@ant-design/icons';
 
 // icons
 const icons = {
   DashboardOutlined,
   ExperimentOutlined,
   SettingOutlined,
-  StockOutlined,
   SwapOutlined,
+  TableOutlined,
   WalletOutlined
 };
 
@@ -15,7 +15,7 @@ const icons = {
 
 const dashboard = {
   id: 'paper-trading',
-  title: 'Paper Trading Dashboard',
+  title: 'AI Index Options Platform',
   type: 'group',
   children: [
     {
@@ -27,8 +27,16 @@ const dashboard = {
       breadcrumbs: false
     },
     {
+      id: 'options-chain',
+      title: 'Options Chain',
+      type: 'item',
+      url: '/options-chain',
+      icon: icons.TableOutlined,
+      breadcrumbs: false
+    },
+    {
       id: 'portfolio',
-      title: 'Portfolio',
+      title: 'Positions',
       type: 'item',
       url: '/portfolio',
       icon: icons.WalletOutlined,
@@ -36,7 +44,7 @@ const dashboard = {
     },
     {
       id: 'trades',
-      title: 'Trades',
+      title: 'Signals',
       type: 'item',
       url: '/trades',
       icon: icons.SwapOutlined,

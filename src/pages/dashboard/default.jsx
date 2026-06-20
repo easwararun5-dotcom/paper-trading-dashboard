@@ -95,10 +95,9 @@ const indexOptionsData = {
 };
 
 const portfolioRows = [
-  { symbol: 'RELIANCE', qty: 25, avg: '2,824.50', ltp: '2,896.20', pnl: 1792.5 },
-  { symbol: 'TCS', qty: 12, avg: '3,860.00', ltp: '3,818.40', pnl: -499.2 },
-  { symbol: 'HDFCBANK', qty: 40, avg: '1,512.30', ltp: '1,548.70', pnl: 1456.0 },
-  { symbol: 'INFY', qty: 30, avg: '1,468.20', ltp: '1,491.60', pnl: 702.0 }
+  { symbol: 'NIFTY 23750 CE', qty: 50, avg: '120.00', ltp: '148.50', pnl: 1425.0 },
+  { symbol: 'BANK NIFTY 52500 PE', qty: 30, avg: '214.00', ltp: '198.40', pnl: -468.0 },
+  { symbol: 'SENSEX 78000 CE', qty: 20, avg: '186.50', ltp: '221.75', pnl: 705.0 }
 ];
 
 const recentSignals = [
@@ -313,7 +312,7 @@ export default function DashboardDefault() {
   return (
     <Stack sx={{ gap: 2 }}>
       <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', gap: 1, mb: 0.5 }}>
-        <SectionTitle title="Paper Trading Dashboard" subtitle="Live-style mock workspace for monitoring positions, signals, and trade execution." />
+        <SectionTitle title="AI Index Options Platform" subtitle="ML-assisted workspace for index options analysis, signals, and position monitoring." />
         <Chip 
           label="Paper Mode" 
           size="small" 
@@ -337,10 +336,10 @@ export default function DashboardDefault() {
           <AnalyticEcommerce title="Current P&L" count="+INR 2,350" percentage={2.35} color="success" extra="Today +INR 780" />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <AnalyticEcommerce title="Open Position" count="RELIANCE x 25" extra="Avg INR 2,824.50" />
+          <AnalyticEcommerce title="Active Position" count="NIFTY 23750 CE" extra="Quantity 50 · Entry ₹120" />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <AnalyticEcommerce title="Last Signal" count="BUY INFY" percentage={68} color="success" extra="EMA crossover, 11:05 AM" />
+          <AnalyticEcommerce title="Latest AI Signal" count="BUY CE" percentage={82} color="success" extra="Confidence 82%" />
         </Grid>
       </Grid>
 
@@ -404,7 +403,7 @@ export default function DashboardDefault() {
         </Grid>
         <Grid size={{ xs: 12, lg: 4 }}>
           <Stack sx={{ gap: 1 }}>
-            <SectionTitle title="Portfolio Summary" subtitle="Top holdings by active exposure" />
+            <SectionTitle title="Position Summary" subtitle="Open index option exposure" />
             <MainCard content={false}>
               {/* Dynamic portfolio summaries card header */}
               <Box sx={{ p: 1.5, borderBottom: '1px solid', borderColor: 'divider', bgcolor: (theme) => withAlpha(theme.vars.palette.action.hover, 0.5) }}>
